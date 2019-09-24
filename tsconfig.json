@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-view-stepper": [
+        "dist/ng-view-stepper"
+      ],
+      "ng-view-stepper/*": [
+        "dist/ng-view-stepper/*"
+      ]
+    }
   }
 }
