@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "author": "Tyler Thomas",
   "repository": "https://github.com/tt9/ng-view-stepper",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

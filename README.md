@@ -8,7 +8,8 @@ NgViewStepper is a tool created to allow you to place flexible animated transiti
 
 ### Installation
 
-Install from NPM (Not currently published yet)
+Install from NPM
+`npm i ng-view-stepper`
 
 Add it to a module in your Angular App
 

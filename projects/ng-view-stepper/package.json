@@ -1,6 +1,9 @@
 {
   "name": "ng-view-stepper",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.3",
+  "author": "Tyler Thomas",
+  "repository": "https://github.com/tt9/ng-view-stepper",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0"
