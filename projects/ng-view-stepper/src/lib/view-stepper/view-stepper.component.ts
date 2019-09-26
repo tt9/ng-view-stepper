@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { ViewStepperViewComponent } from '../view-stepper-view/view-stepper-view.component';
 import { ViewStepperAnimation } from '../animations/view-stepper-animations';
-import { SqueezeAndFlyAnimation } from '../animations/squeeze-and-fly.animation';
+import { FlyOutInAnimation } from '../animations/fly-out-in.animation';
 
 @Component({
   selector: 'ng-view-stepper',
@@ -24,8 +24,7 @@ import { SqueezeAndFlyAnimation } from '../animations/squeeze-and-fly.animation'
   styleUrls: ['./view-stepper.component.scss'],
   exportAs: 'ngViewStepper',
 })
-export class ViewStepperComponent
-  implements OnInit, AfterContentInit, AfterViewInit {
+export class ViewStepperComponent implements AfterContentInit, AfterViewInit {
   @ViewChild('viewOutlet', { read: ViewContainerRef })
   viewOutlet: ViewContainerRef;
 
@@ -42,30 +41,29 @@ export class ViewStepperComponent
 
   @Input() initialViewKey: string;
 
-  private viewArray: {
+  @Input() animationRunner: ViewStepperAnimation;
+
+  // TODO: prebuild a bunch of animations
+  // and add an animationName input
+
+  public viewArray: {
     view: ViewStepperViewComponent;
     index: number;
     key: string;
   }[];
 
-  private currentView: {
+  public currentView: {
     view: ViewStepperViewComponent;
     index: number;
     key: string;
     viewRef: EmbeddedViewRef<any>;
   };
 
-  constructor(
-    public renderer: Renderer2,
-    @Optional() public animationDriver: ViewStepperAnimation,
-    private injector: Injector
-  ) {
-    if (!this.animationDriver) {
-      this.animationDriver = this.injector.get(SqueezeAndFlyAnimation);
+  constructor(public renderer: Renderer2, private injector: Injector) {
+    if (!this.animationRunner) {
+      this.animationRunner = this.injector.get(FlyOutInAnimation);
     }
   }
-
-  ngOnInit() {}
 
   ngAfterContentInit() {
     this.viewArray = this.views.map((view, index) => {
@@ -103,30 +101,6 @@ export class ViewStepperComponent
   }
 
   async goToView(viewKey) {
-    /* 
-      Steps for view transition
-
-      Given: viewParent, currentView, targetView
-
-      1. *animation specific* prepare the target view for transition
-      through hiding it with opacity or positioning it at the 
-      starting point of the animation. 
-
-      2. make the viewParent height static -- This will allow
-      us to animate it to the height required for the target view
-
-      3.make the currentView position absolute -- This will prevent
-      the targetview from being forced to the next line below it.
-
-      4. *animation specific* run the transition animations for
-      parent, currentView and targetView. 
-
-      5. remove the currentView from the DOM
-
-      6. restore the automatic height of the parent.
-      
-    */
-
     if (this.currentView.key === viewKey) {
       return null;
     }
@@ -134,7 +108,7 @@ export class ViewStepperComponent
     const targetView = this.viewArray.find(v => v.key === viewKey);
 
     if (!targetView) {
-      throw new Error('tried to navigate to a non-existent view');
+      throw new Error('tried to navigate to a view that does not exist');
     }
 
     const viewParentBoundingRect = this.viewParentEl.getBoundingClientRect();
@@ -159,11 +133,7 @@ export class ViewStepperComponent
 
     const targetViewBoundingRect = targetEmbeddedViewRef.rootNodes[0].getBoundingClientRect();
 
-    // Run 3 animations.
-    // The exiting element animation
-    // The entering element animation
-    // The container animation
-    const afterCleanup = await this.animationDriver.execute(
+    const afterCleanup = await this.animationRunner.execute(
       currentViewEl,
       currentViewRect,
       this.currentView.index,

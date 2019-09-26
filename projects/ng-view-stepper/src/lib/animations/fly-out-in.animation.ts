@@ -10,7 +10,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class SqueezeAndFlyAnimation implements ViewStepperAnimation {
+export class FlyOutInAnimation implements ViewStepperAnimation {
   enteringAnimation: AnimationFactory;
   parentAnimation: AnimationFactory;
   constructor(public animBuilder: AnimationBuilder) {}
