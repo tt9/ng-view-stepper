@@ -1,6 +1,8 @@
 {
   "name": "ng-view-stepper-runner",
   "version": "0.0.0",
+  "author": "Tyler Thomas",
+  "repository": "https://github.com/tt9/ng-view-stepper",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
