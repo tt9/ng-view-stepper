@@ -11,13 +11,14 @@ NgViewStepper is a tool created to allow you to place flexible animated transiti
 Install from NPM
 `npm i ng-view-stepper`
 
-Add it to a module in your Angular App
+Add it to a module in your Angular App. Ensure that you have included BrowserAnimationsModule as well, the prebuilt animations rely on AnimationBuilder so you should install the web-animations polyfill.
 
 ```typescript
-import { ViewStepperModule } from 'ng-view-stepper'
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgViewStepperModule } from 'ng-view-stepper'
 
 @NgModule({
-    imports: [ViewStepperModule]
+    imports: [..., BrowserAnimationsModule, NgViewStepperModule]
 })
 ```
 
