@@ -25,41 +25,47 @@ export class FlyOutInAnimation implements ViewStepperAnimation {
     viewParentBoundingRect: ClientRect
   ): Promise<any> {
     return new Promise(res => {
+      const delayMs = 150;
+
+      viewParentNode.style.overflow = 'hidden';
       const forward = targetViewIndex > currentViewIndex;
       targetViewNode.style.transform = forward
         ? 'translateX(32px)'
         : 'translateX(-32px)';
       targetViewNode.style.opacity = '0';
+      setTimeout(() => {
+        const apExit = this.getExitingAnimation(forward).create(
+          currentViewNode
+        );
 
-      const apExit = this.getExitingAnimation(forward).create(currentViewNode);
+        const apViewParent = this.getViewParentAnimation(
+          targetParentBoundingRect.height
+        ).create(viewParentNode);
 
-      const apViewParent = this.getViewParentAnimation(
-        targetParentBoundingRect.height
-      ).create(viewParentNode);
+        const apEnter = this.getEnteringAnimation().create(targetViewNode);
 
-      const apEnter = this.getEnteringAnimation().create(targetViewNode);
-
-      let animationsFinished = 0;
-      function onAnimDone() {
-        animationsFinished++;
-        if (animationsFinished === 3) {
-          res(() => {
-            targetViewNode.style.transform = null;
-            targetViewNode.style.opacity = '1';
-            apExit.destroy();
-            apEnter.destroy();
-            apViewParent.destroy();
-          });
+        let animationsFinished = 0;
+        function onAnimDone() {
+          animationsFinished++;
+          if (animationsFinished === 3) {
+            res(() => {
+              targetViewNode.style.transform = null;
+              targetViewNode.style.opacity = '1';
+              apExit.destroy();
+              apEnter.destroy();
+              apViewParent.destroy();
+            });
+          }
         }
-      }
 
-      apExit.onDone(onAnimDone);
-      apEnter.onDone(onAnimDone);
-      apViewParent.onDone(onAnimDone);
+        apExit.onDone(onAnimDone);
+        apEnter.onDone(onAnimDone);
+        apViewParent.onDone(onAnimDone);
 
-      apExit.play();
-      apEnter.play();
-      apViewParent.play();
+        apExit.play();
+        apEnter.play();
+        apViewParent.play();
+      }, delayMs);
     });
   }
 
